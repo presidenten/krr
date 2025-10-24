@@ -15,10 +15,10 @@ class MemoryLoader(PrometheusMetric):
         cluster_label = self.get_prometheus_cluster_label()
         return f"""
             max(
-                container_memory_working_set_bytes{{
-                    namespace="{object.namespace}",
-                    pod=~"{pods_selector}",
-                    container="{object.container}"
+                container_memory_working_set{{
+                    k8s_namespace_name="{object.namespace}",
+                    k8s_pod_name=~"{pods_selector}",
+                    k8s_container_name="{object.container}"
                     {cluster_label}
                 }}
             ) by (container, pod, job)
@@ -36,10 +36,10 @@ class MaxMemoryLoader(PrometheusMetric):
         return f"""
             max_over_time(
                 max(
-                    container_memory_working_set_bytes{{
-                        namespace="{object.namespace}",
-                        pod=~"{pods_selector}",
-                        container="{object.container}"
+                    container_memory_working_set{{
+                        k8s_namespace_name="{object.namespace}",
+                        k8s_pod_name=~"{pods_selector}",
+                        k8s_container_name="{object.container}"
                         {cluster_label}
                     }}
                 ) by (container, pod, job)
@@ -59,10 +59,10 @@ class MemoryAmountLoader(PrometheusMetric):
         return f"""
             count_over_time(
                 max(
-                    container_memory_working_set_bytes{{
-                        namespace="{object.namespace}",
-                        pod=~"{pods_selector}",
-                        container="{object.container}"
+                    container_memory_working_set{{
+                        k8s_namespace_name="{object.namespace}",
+                        k8s_pod_name=~"{pods_selector}",
+                        k8s_container_name="{object.container}"
                         {cluster_label}
                     }}
                 ) by (container, pod, job)
@@ -91,7 +91,7 @@ class MaxOOMKilledMemoryLoader(PrometheusMetric):
                             pod=~"{pods_selector}",
                             container="{object.container}"
                             {cluster_label}
-                        }} 
+                        }}
                     ) by (pod, container, job)
                     * on(pod, container, job) group_left(reason)
                     max(

@@ -253,10 +253,10 @@ class PrometheusMetricsService(MetricsService):
         # use this for queries with no labels. turn ', cluster="xxx"' to 'cluster="xxx"'
         single_cluster_label = cluster_label.replace(",", "")
         memory_query = f"""
-            sum(max by (instance) (machine_memory_bytes{{ {single_cluster_label} }}))
+            sum(max by (instance) (system_memory_limit{{ {single_cluster_label} }}))
         """
         cpu_query = f"""
-            sum(max by (instance) (machine_cpu_cores{{ {single_cluster_label} }}))
+            sum(max by (instance) (system_cpu_logical_count{{ {single_cluster_label} }}))
         """
         kube_system_requests_mem = f"""
             sum(max(kube_pod_container_resource_requests{{ namespace='kube-system', resource='memory' {cluster_label} }})  by (job, pod, container) )

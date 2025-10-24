@@ -16,10 +16,10 @@ class CPULoader(PrometheusMetric):
         return f"""
             max(
                 rate(
-                    container_cpu_usage_seconds_total{{
-                        namespace="{object.namespace}",
-                        pod=~"{pods_selector}",
-                        container="{object.container}"
+                    container_cpu_utilization{{
+                        k8s_namespace_name="{object.namespace}",
+                        k8s_pod_name=~"{pods_selector}",
+                        k8s_container_name="{object.container}"
                         {cluster_label}
                     }}[{step}]
                 )
@@ -44,10 +44,10 @@ def PercentileCPULoader(percentile: float) -> type[PrometheusMetric]:
                     {round(percentile / 100, 2)},
                     max(
                         rate(
-                            container_cpu_usage_seconds_total{{
-                                namespace="{object.namespace}",
-                                pod=~"{pods_selector}",
-                                container="{object.container}"
+                            container_cpu_utilization{{
+                                k8s_namespace_name="{object.namespace}",
+                                k8s_pod_name=~"{pods_selector}",
+                                k8s_container_name="{object.container}"
                                 {cluster_label}
                             }}[{step}]
                         )
@@ -70,10 +70,10 @@ class CPUAmountLoader(PrometheusMetric):
         return f"""
             count_over_time(
                 max(
-                    container_cpu_usage_seconds_total{{
-                        namespace="{object.namespace}",
-                        pod=~"{pods_selector}",
-                        container="{object.container}"
+                    container_cpu_utilization{{
+                        k8s_namespace_name="{object.namespace}",
+                        k8s_pod_name=~"{pods_selector}",
+                        k8s_container_name="{object.container}"
                         {cluster_label}
                     }}
                 ) by (container, pod, job)
